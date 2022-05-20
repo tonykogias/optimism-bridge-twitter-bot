@@ -1,27 +1,52 @@
 import { ethers, BigNumber } from 'ethers'
 import { getContracts } from './utils/contracts'
+import { 
+	OP_L2_ETH_TOKEN_ADDR,
+	ETHERSCAN_LINK,
+	OP_ETHERSCAN_LINK,
+	MIN_AMOUNT
+} from './utils/constants'
 import { getClient, postTweet } from './utils/twitter-api'
 
 const main = () => {
 	const contracts = getContracts();
 	const client = getClient();
 
-	contracts.OPL1Contract.on("ETHDepositInitiated", (from: string, to: string, value: BigNumber, data: any) => {
-		console.log("found event with from value: ", from);
-		console.log("found event with to value: ", to);
-		console.log("found event with value value: ", ethers.utils.formatEther(value.toString()));
-		console.log("found event with data value: ", data);
+	contracts.OPL1Contract.on("ETHDepositInitiated", async (
+			from: string,
+			to: string,
+			amount: BigNumber,
+			data: any,
+			event: any
+		) => {
+
+		let _amount:string = ethers.utils.formatEther(amount.toNumber());
+
+		if(Number(amount) > MIN_AMOUNT){
+			let link = ETHERSCAN_LINK.concat(event.transactionHash);
+			await postTweet(client, _amount, link, "deposit");
+		}
+		console.log("amount deposit: ", _amount);
 	})
 
-	contracts.OPL2Contract.on("DepositFinalized", (_l1Token: string, _l2Token: string, _from: string, _to: string, _amount: BigNumber, _data: any) => {
-		console.log("found event with _l1Token value: ", _l1Token);
-		console.log("found event with _l2Token value: ", _l2Token);
-		console.log("found event with _from value: ", _from);
-		console.log("found event with _to value: ", _to);
-		console.log("found event with _amount value: ", ethers.utils.formatEther(_amount.toString()));
-		console.log("found event with _data value: ", _data);
-	})
+	contracts.OPL2Contract.on("WithdrawalInitiated", async (
+			l1Token: string,
+			l2Token: string,
+			from: string,
+			to: string,
+			amount: BigNumber,
+			data: any,
+			event: any
+		) => {
 
+		let _amount:string = ethers.utils.formatEther(amount.toNumber());
+
+		if(l2Token == OP_L2_ETH_TOKEN_ADDR && Number(_amount) > MIN_AMOUNT) {
+			let link = OP_ETHERSCAN_LINK.concat(event.transactionHash);
+			await postTweet(client, _amount, link, "withdraw");
+		}
+		console.log("amount withdraw: ", _amount);
+	})
 }
 
 main();

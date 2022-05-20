@@ -1,5 +1,6 @@
 import { TwitterApi, TweetV2PostTweetResult} from 'twitter-api-v2'
-import dotenv from 'dotenv';
+import { ETHERSCAN_LINK } from './constants'
+import dotenv from 'dotenv'
 dotenv.config()
 
 export const getClient = ():any => {
@@ -13,10 +14,13 @@ export const getClient = ():any => {
 	return twitterClient;
 }
 
-export const postTweet = async (client: any, amount: number) => {
+export const postTweet = async (client: any, amount: string, link: string, type: string) => {
 	try{
-		await client.v2.tweet(`A deposit of ${amount} ETH was initialized to Optimism through Optimism Standard Bridge`);
+		await client.v2.tweet(
+			`A ${type} of ${amount} ETH was initialized to Optimism through Optimism Standard Bridge.\n ${link}`
+		);
 	}catch(error){
+		// TODO: Send me a notification if there is an error with slack/telegram
 		console.log("Error on tweeting: ", error);
 	}	
 }
