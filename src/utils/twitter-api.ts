@@ -14,10 +14,17 @@ export const getClient = ():any => {
 	return twitterClient;
 }
 
-export const postTweet = async (client: any, amount: string, link: string, type: string) => {
+export const postTweet = async (
+	client: any,
+	amount: string,
+	link: string,
+	type: string,
+	bridge: string
+) => {
+
 	try{
 		await client.v2.tweet(
-			`A ${type} of ${amount} ETH was initialized to Optimism through Optimism Standard Bridge.\n ${link}`
+			`A ${type} of ${amount} ETH was initialized to Optimism through ${bridge}.\n ${link}`
 		);
 	}catch(error){
 		// TODO: Send me a notification if there is an error with slack/telegram
