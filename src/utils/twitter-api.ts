@@ -24,7 +24,7 @@ export const postTweet = async (
 
 	try{
 		await client.v2.tweet(
-			`A ${type} of ${amount} ETH was initialized to Optimism through ${bridge}.\n ${link}`
+			`A ${type} of ${amount} #ETH was initialized to Optimism through ${bridge}.\n ${link}`
 		);
 	}catch(error){
 		// TODO: Send me a notification if there is an error with slack/telegram
