@@ -88,10 +88,6 @@ const main = () => {
 	})
 }
 
-app.get('/', (req, res) => {
-  res.send(res);
-})
-
 app.listen(port, () => {
 	console.log(`Listening on port ${port}....`);
 	try{
@@ -103,5 +99,9 @@ app.listen(port, () => {
 
 // ping the server every 25minutes in order to not go idle on heroku
 setInterval(function() {
-    http.get("http://optimism-bridge-twitter-bot.herokuapp.com");
+    try{
+    	http.get("http://optimism-bridge-twitter-bot.herokuapp.com");
+    }catch(e){
+    	console.log(e);
+    }
 }, 1500000); // every 25 minutes (1 500 000)
