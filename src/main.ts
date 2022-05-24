@@ -8,6 +8,8 @@ import {
 	OP_CHAIN_ID
 } from './utils/constants'
 import { getClient, postTweet } from './utils/twitter-api'
+import express, { Express } from 'express'
+import http from 'http'
 
 enum TransactionType {
 	DEPOSIT = "deposit",
@@ -18,6 +20,9 @@ enum Bridge {
 	OP = "Optimism Standard Bridge",
 	HOP = "HOP Bridge"
 }
+
+const app: Express = express();
+const port = process.env.PORT || 5000;
 
 const main = () => {
 	const contracts = getContracts();
@@ -83,4 +88,20 @@ const main = () => {
 	})
 }
 
-main();
+app.get('/', (req, res) => {
+  res.send(res);
+})
+
+app.listen(port, () => {
+	console.log(`Listening on port ${port}....`);
+	try{
+		main();
+	}catch(e) {
+		console.log(e);
+	}
+});
+
+// ping the server every 25minutes in order to not go idle on heroku
+setInterval(function() {
+    http.get("http://optimism-bridge-twitter-bot.herokuapp.com");
+}, 1500000); // every 25 minutes (1 500 000)
