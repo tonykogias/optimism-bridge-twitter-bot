@@ -1,1 +1,1 @@
-web: pm2 link h4eyp2g5i9kkw8s 17wemzf4pbmyqsr && pm2-runtime start ecosystem.config.js
+web: pm2-runtime start ecosystem.config.js

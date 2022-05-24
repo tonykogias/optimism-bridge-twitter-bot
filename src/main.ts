@@ -21,6 +21,7 @@ enum Bridge {
 }
 
 const app: Express = express();
+const port = process.env.PORT || 5000;
 
 const main = () => {
 	const contracts = getContracts();
@@ -86,8 +87,8 @@ const main = () => {
 	})
 }
 
-app.listen(3000, () => {
-	console.log("Listening on port 3000....");
+app.listen(port, () => {
+	console.log(`Listening on port ${port}....`);
 	try{
 		main();
 	}catch(e) {
