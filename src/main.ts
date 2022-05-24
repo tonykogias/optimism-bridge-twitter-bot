@@ -8,6 +8,7 @@ import {
 	OP_CHAIN_ID
 } from './utils/constants'
 import { getClient, postTweet } from './utils/twitter-api'
+import express, { Express } from 'express'
 
 enum TransactionType {
 	DEPOSIT = "deposit",
@@ -18,6 +19,8 @@ enum Bridge {
 	OP = "Optimism Standard Bridge",
 	HOP = "HOP Bridge"
 }
+
+const app: Express = express();
 
 const main = () => {
 	const contracts = getContracts();
@@ -83,4 +86,11 @@ const main = () => {
 	})
 }
 
-main();
+app.listen(3000, () => {
+	console.log("Listening on port 3000....");
+	try{
+		main();
+	}catch(e) {
+		console.log(e);
+	}
+});
